@@ -1,0 +1,30 @@
+---
+- name: GlusterFS | Repo | add
+  apt_repository:
+    repo: ppa:gluster/glusterfs-10
+    state: present
+  tags:
+  - initialize
+  - initialize_glusterfs
+  - initialize_glusterfs_repo
+
+- name: GlusterFS | Install
+  apt:
+    name: "{{ item }}"
+    state: present
+  tags:
+  - initialize
+  - initialize_glusterfs
+  - install_glusterfs
+  with_items:
+    - glusterfs-server
+
+- name: GlusterFS | Service | Start
+  systemd:
+    name: glusterd
+    enabled: yes
+    state: started
+  tags:
+  - initialize
+  - initialize_glusterfs
+  - initialize_glusterfs_systemd

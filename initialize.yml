@@ -1,8 +1,10 @@
 ---
 - hosts: all
+  gather_facts: no
   roles:
-  - common
+  - initialize
 
 - hosts: glusterfs
+  gather_facts: no
   roles:
   - glusterfs

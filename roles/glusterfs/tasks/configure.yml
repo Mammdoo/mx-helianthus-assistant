@@ -1,0 +1,10 @@
+---
+- name: GlusterFS | Folder | Create
+  file:
+    state: directory
+    path: /data/glusterfs
+  tags:
+  - initialize
+  - initialize_glusterfs
+  - initialize_glusterfs_configure
+  - initialize_glusterfs_configure_folder
