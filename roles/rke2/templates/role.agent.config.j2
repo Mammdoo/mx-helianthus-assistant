@@ -1,1 +1,2 @@
 token: {{ rke2_agent_token | b64encode }}
+server: https://{{ hostvars[groups['rke2_server'][0]].ansible_ssh_host }}:6443
