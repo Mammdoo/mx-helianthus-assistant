@@ -1,0 +1,42 @@
+---
+- name: rke2 | systemd | start
+  ansible.builtin.systemd:
+    name: "rke2-server"
+    enabled: yes
+    state: started
+  when: cluster_role == "server"
+  tags:
+  - initialize
+  - initialize_rke2
+  - initialize_rke2_systemd
+
+- name: rke2 | systemd | start
+  ansible.builtin.systemd:
+    name: "rke2-agent"
+    enabled: yes
+    state: started
+  when: cluster_role == "agent"
+  tags:
+  - initialize
+  - initialize_rke2
+  - initialize_rke2_systemd
+
+- name: rke2 | systemd | restart
+  ansible.builtin.systemd:
+    name: "rke2-server"
+    enabled: yes
+    state: restarted
+  when: cluster_role == "server"
+  tags:
+  - rke2_systemd
+  - rke2_systemd_restart
+
+- name: rke2 | systemd | restart
+  ansible.builtin.systemd:
+    name: "rke2-agent"
+    enabled: yes
+    state: restarted
+  when: cluster_role == "agent"
+  tags:
+  - rke2_systemd
+  - rke2_systemd_restart

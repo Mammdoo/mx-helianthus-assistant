@@ -1,8 +1,9 @@
 ---
 - hosts: all
   roles:
-  - common
+  - initialize
 
-- hosts: glusterfs
+- hosts: rke2
+  gather_facts: false
   roles:
-  - glusterfs
+  - rke2

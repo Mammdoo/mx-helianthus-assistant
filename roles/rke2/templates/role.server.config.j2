@@ -1,0 +1,8 @@
+cluster-cidr: 100.96.0.0/12
+service-cidr: 100.64.0.0/12
+cluster-dns: 100.64.0.10
+cluster-domain: assistant.mammdoo
+cni: cilium
+service-node-port-range: 25000-28000
+token: {{ rke2_server_token | b64encode }}
+agent-token: {{ rke2_agent_token | b64encode }}

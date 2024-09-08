@@ -1,0 +1,8 @@
+---
+- import_tasks: prequisites.yaml
+
+- import_tasks: config.yaml
+
+- import_tasks: install.yaml
+
+- import_tasks: systemd.yaml

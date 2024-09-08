@@ -1,0 +1,37 @@
+---
+- name: rke2 | install | environment
+  ansible.builtin.lineinfile:
+    path: /etc/default/rke2-{{ cluster_role }}
+    regexp: "{{ item.env }}"
+    line: "{{ item.env }}={{ item.value }}"
+    create: true
+    state: present
+  with_items:
+  - { env: "RKE2_CONFIG_FILE", value: "{{ rke2_dir }}/config/config.yaml" }
+  - { env: "INSTALL_RKE2_CHANNEL", value: "{{ rke2_channel }}" }
+  - { env: "INSTALL_RKE2_TYPE", value: "{{ cluster_role }}" }
+  tags:
+  - initialize
+  - initialize_rke2
+  - initialize_rke2_install
+  - initialize_rke2_install_environment
+
+- name: rke2 | install | download
+  ansible.builtin.get_url:
+    url: https://get.rke2.io
+    dest: /tmp/rke2_install.sh
+    mode: 0755
+  tags:
+  - initialize
+  - initialize_rke2
+  - initialize_rke2_install
+  - initialize_rke2_install_download
+
+- name: rke2 | install | execute
+  ansible.builtin.shell:
+    cmd: /tmp/rke2_install.sh
+  tags:
+  - initialize
+  - initialize_rke2
+  - initialize_rke2_install
+  - initialize_rke2_install_execute

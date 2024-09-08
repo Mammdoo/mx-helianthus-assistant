@@ -1,0 +1,14 @@
+---
+- name: rke2 | data-dir | create
+  ansible.builtin.file:
+    state: directory
+    path: "{{ rke2_dir }}/{{ item }}"
+    recurse: yes
+    mode: 0755
+  with_items:
+  - data
+  - config/config.yaml.d
+  tags:
+  - initialize
+  - initialize_rke2
+  - initialize_rke2_prequisites

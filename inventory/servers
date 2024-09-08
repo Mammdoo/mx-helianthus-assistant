@@ -1,0 +1,17 @@
+[rke2_server]
+mx-cluster-200  ansible_ssh_host=10.250.252.200   cluster_role=server
+
+[rke2_agent]
+mx-cluster-201  ansible_ssh_host=10.250.252.201   cluster_role=agent
+mx-cluster-202  ansible_ssh_host=10.250.252.202   cluster_role=agent
+
+[rke2:children]
+rke2_server
+rke2_agent
+
+[rke2:vars]
+rke2_server_token=mx-assistant-server
+rke2_agent_token=mx-assistant-agent
+
+[all:vars]
+ansible_ssh_user=root
