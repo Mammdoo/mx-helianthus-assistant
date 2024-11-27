@@ -1,0 +1,32 @@
+---
+- name: ceph | package | install
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+  - ceph
+  - lvm2
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_package
+
+- name: ceph | config | directory
+  ansible.builtin.file:
+    path: /etc/ceph
+    state: directory
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_config
+
+- name: ceph | config | create
+  ansible.builtin.template:
+    src: ceph.conf.j2
+    dest: /etc/ceph/{{ ceph_name }}.conf
+  when: ceph_role == 'mon'
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_config

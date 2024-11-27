@@ -1,0 +1,36 @@
+---
+- name: ceph | stop | systemd
+  ansible.builtin.systemd:
+    name: ceph-mon@{{ inventory_hostname }}
+    state: stopped
+    enabled: no
+  tags:
+  - cleanup
+  - cleanup_ceph
+  - cleanup_ceph_stop
+
+- name: ceph | config | delete
+  ansible.builtin.file:
+    state: absent
+    path: /var/lib/ceph/{{ item }}/{{ ceph_name }}-{{ inventory_hostname }}
+  with_items:
+  - mon
+  - bootstrap-osd
+  tags:
+  - cleanup
+  - cleanup_ceph
+  - cleanup_ceph_config
+
+- name: ceph | keyring | delete
+  ansible.builtin.file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+  - /etc/ceph/ceph.client.admin.keyring
+  - /tmp/ceph.mon.keyring
+  - /etc/ceph/keyring.ok
+  - /var/lib/ceph/bootstrap-osd/ceph.keyring
+  tags:
+  - cleanup
+  - cleanup_ceph
+  - cleanup_ceph_keyring

@@ -1,0 +1,10 @@
+---
+- import_tasks: prequisites.yaml
+
+- import_tasks: keyring.yaml
+
+- import_tasks: bootstrap.yaml
+
+- import_tasks: osd.yaml
+
+- import_tasks: cleanup.yaml

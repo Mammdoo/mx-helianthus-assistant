@@ -1,0 +1,95 @@
+---
+- name: ceph | keyring | status
+  ansible.builtin.stat:
+    path: /etc/ceph/keyring.ok
+  register: keyring_status
+  when: cephadm is defined and cephadm
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_keyring
+  - initialize_ceph_keyring_status
+
+- name: ceph | keyring | generator
+  ansible.builtin.copy:
+    src: keyring.generator.sh
+    dest: /tmp/keyring.generator.sh
+    mode: '0755'
+  when: cephadm is defined and cephadm
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_keyring
+  - initialize_ceph_keyring_generator
+
+- name: ceph | keyring | shell
+  ansible.builtin.shell:
+    cmd: /tmp/keyring.generator.sh
+  when: cephadm is defined and cephadm and keyring_status.stat.exists == false
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_keyring
+
+- name: ceph | keyring | finished
+  ansible.builtin.file:
+    path: /etc/ceph/keyring.ok
+    state: touch
+    force: no
+  when: cephadm is defined and cephadm
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_keyring
+
+- name: ceph | keyring | fetch
+  ansible.builtin.fetch:
+    src: "{{ item.remote }}"
+    dest: "{{ playbook_dir }}/roles/ceph/files/{{ item.local }}"
+    flat: yes
+  when: cephadm is defined and cephadm
+  with_items:
+  - remote: /tmp/ceph.client.admin.keyring
+    local: ceph.client.admin.keyring
+  - remote: /tmp/ceph.mon.keyring
+    local: ceph.mon.keyring
+  - remote: /tmp/ceph.bootstrap-osd.keyring
+    local: ceph.bootstrap-osd.keyring
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_keyring
+
+- name: ceph | keyring | data
+  ansible.builtin.file:
+    state: directory
+    path: /var/lib/ceph/{{ item }}/{{ ceph_name }}-{{ inventory_hostname }}
+    owner: ceph
+    group: ceph
+    recurse: yes
+  with_items:
+  - mon
+  - bootstrap-osd
+  - mgr
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_keyring
+  - initialize_ceph_keyring_data
+
+- name: ceph | keyring | copy
+  ansible.builtin.copy:
+    src: "{{ item.local }}"
+    dest: "{{ item.remote }}"
+  with_items:
+  - remote: /etc/ceph/{{ ceph_name }}.client.admin.keyring
+    local: ceph.client.admin.keyring
+  - remote: /var/lib/ceph/bootstrap-osd/{{ ceph_name }}.keyring
+    local: ceph.bootstrap-osd.keyring
+  - remote: /tmp/{{ ceph_name }}.mon.keyring
+    local: ceph.mon.keyring
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_keyring
+  - initialize_ceph_keyring_copy
