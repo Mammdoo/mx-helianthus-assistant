@@ -1,18 +1,18 @@
 ---
-- name: ceph | osd | keyring
-  ansible.builtin.shell:
-    cmd: ceph --cluster {{ ceph_name }} auth get client.bootstrap-osd -o /etc/ceph/{{ ceph_name }}.client.bootstrap-osd.keyring
-  tags:
-  - initialize
-  - initialize_ceph
-  - initialize_ceph_osd
-  - initialize_ceph_osd_keyring
+# - name: ceph | osd | keyring
+#   ansible.builtin.shell:
+#     cmd: ceph --cluster {{ ceph_name }} auth get client.bootstrap-osd -o /etc/ceph/{{ ceph_name }}.client.bootstrap-osd.keyring
+#   tags:
+#   - initialize
+#   - initialize_ceph
+#   - initialize_ceph_osd
+#   - initialize_ceph_osd_keyring
 
-- name: ceph | osd | create
-  ansible.builtin.shell:
-    cmd: ceph-volume --cluster {{ ceph_name }} lvm create --data {{ osd }}
-  tags:
-  - initialize
-  - initialize_ceph
-  - initialize_ceph_osd
-  - initialize_ceph_osd_create
+# - name: ceph | osd | create
+#   ansible.builtin.shell:
+#     cmd: ceph-volume --cluster {{ ceph_name }} lvm create --data {{ osd }}
+#   tags:
+#   - initialize
+#   - initialize_ceph
+#   - initialize_ceph_osd
+#   - initialize_ceph_osd_create

@@ -26,7 +26,6 @@
   ansible.builtin.template:
     src: ceph.conf.j2
     dest: /etc/ceph/{{ ceph_name }}.conf
-  when: ceph_role == 'mon'
   tags:
   - initialize
   - initialize_ceph

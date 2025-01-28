@@ -15,7 +15,7 @@
     cmd: monmaptool --add {{ hostvars[item]['inventory_hostname'] }} {{ hostvars[item]['ansible_ssh_host'] }} /tmp/monmap
   when: cephadm is defined and cephadm
   run_once: yes
-  with_items: "{{ groups['ceph_mon'] }}"
+  with_items: "{{ groups['ceph'] }}"
   ignore_errors: yes
   tags:
   - initialize
@@ -27,7 +27,7 @@
 #   debug:
 #     msg: "{{ hostvars[item]['inventory_hostname'] }}"
 #   when: cephadm is defined and cephadm
-#   with_items: "{{ groups['ceph_mon'] }}"
+#   with_items: "{{ groups['ceph'] }}"
 #   tags:
 #   - ceph_debug
 
@@ -79,16 +79,17 @@
   - initialize_ceph_bootstrap
   - initialize_ceph_bootstrap_environment
 
-- name: ceph | bootstrap | ready
+- name: ceph | bootstrap | mon | ready
   ansible.builtin.shell:
-    cmd: sudo -u ceph ceph-mon --cluster {{ ceph_name }} --mkfs -i {{ inventory_hostname }} --monmap /tmp/monmap --keyring /tmp/{{ ceph_name }}.mon.keyring
+    cmd: ceph-mon --cluster {{ ceph_name }} --mkfs -i {{ inventory_hostname }} --monmap /tmp/monmap --keyring /tmp/{{ ceph_name }}.mon.keyring
+  become_user: ceph
   tags: 
   - initialize
   - initialize_ceph
   - initialize_ceph_bootstrap
   - initialize_ceph_bootstrap_ready
 
-- name: ceph | bootstrap | start
+- name: ceph | bootstrap | mon | start
   ansible.builtin.systemd:
     name: ceph-mon@{{ inventory_hostname }}
     state: started
@@ -99,9 +100,18 @@
   - initialize_ceph_bootstrap
   - initialize_ceph_bootstrap_start
 
+- name: ceph | bootstrap | mon | msgr2
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} mon enable-msgr2
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_bootstrap
+  - initialize_ceph_bootstrap_msgv2
+
 - name: ceph | bootstrap | mgr | token
   ansible.builtin.shell:
-    cmd:  ceph --cluster {{ ceph_name }} auth get-or-create mgr.{{ inventory_hostname }} mon 'allow profile mgr' osd 'allow *' mds 'allow *' > /var/lib/ceph/mgr/{{ ceph_name }}-{{ inventory_hostname }}/keyring
+    cmd: ceph --cluster {{ ceph_name }} auth get-or-create mgr.{{ inventory_hostname }} mon 'allow profile mgr' osd 'allow *' mds 'allow *' > /var/lib/ceph/mgr/{{ ceph_name }}-{{ inventory_hostname }}/keyring
   tags:
   - initialize
   - initialize_ceph
@@ -109,12 +119,38 @@
   - initialize_ceph_bootstrap_mgr
   - initialize_ceph_bootstrap_mgr_token
 
-- name: ceph | bootstrap | mgr | start
+- name: ceph | bootstrap | mgr | install
   ansible.builtin.shell:
-    cmd: sudo -u ceph ceph-mgr --cluster {{ ceph_name }} -i {{ inventory_hostname }}
+    cmd: ceph-mgr --cluster {{ ceph_name }} -i {{ inventory_hostname }}
+  become_user: ceph
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_bootstrap
+  - initialize_ceph_bootstrap_mgr
+  - initialize_ceph_bootstrap_mgr_install
+
+- name: ceph | bootstrap | mgr | start
+  ansible.builtin.systemd:
+    name: ceph-mgr@{{ inventory_hostname }}
+    state: started
+    enabled: yes
   tags:
   - initialize
   - initialize_ceph
   - initialize_ceph_bootstrap
   - initialize_ceph_bootstrap_mgr
   - initialize_ceph_bootstrap_mgr_start
+
+- name: ceph | bootstrap | mgr | module
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} mgr module disable {{ item }}
+  with_items:
+  - dashboard
+  - prometheus
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_bootstrap
+  - initialize_ceph_bootstrap_mgr
+  - initialize_ceph_bootstrap_mgr_module

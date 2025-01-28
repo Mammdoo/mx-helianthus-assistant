@@ -1,0 +1,20 @@
+[server]
+mx-cluster-200  ansible_ssh_host=10.250.252.200   cluster_role=server  cephadm=true
+mx-cluster-201  ansible_ssh_host=10.250.252.201   cluster_role=server
+mx-cluster-202  ansible_ssh_host=10.250.252.202   cluster_role=server
+
+[rke2:children]
+server
+
+[rke2:vars]
+rke2_server_token=mx-assistant-server
+
+[ceph:children]
+server
+
+[ceph:vars]
+ceph_uuid=35437B3D-CE81-41C5-96C8-F48A3D778F2C
+ceph_name=mx-assistant
+
+[all:vars]
+ansible_ssh_user=root
