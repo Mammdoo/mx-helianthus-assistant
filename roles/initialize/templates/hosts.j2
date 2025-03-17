@@ -9,6 +9,11 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 
 # add group hosts here
-{% for host in groups['server'] %}
+{% for host in groups['all'] %}
 {{ hostvars[host]['ansible_ssh_host'] }} {{ hostvars[host]['inventory_hostname'] }}
+{% endfor %}
+
+# add rke2 initialize nodes here
+{% for host in groups['rke2_initialize'] %}
+{{ hostvars[host]['ansible_ssh_host'] }} {{ loadbalancer_domain }}
 {% endfor %}

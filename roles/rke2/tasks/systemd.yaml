@@ -4,7 +4,7 @@
     name: "rke2-server"
     enabled: yes
     state: started
-  when: cluster_role == "server"
+  when: rke2_role == "server"
   tags:
   - initialize
   - initialize_rke2
@@ -15,7 +15,7 @@
     name: "rke2-agent"
     enabled: yes
     state: started
-  when: cluster_role == "agent"
+  when: rke2_role == "agent"
   tags:
   - initialize
   - initialize_rke2
@@ -26,7 +26,7 @@
     name: "rke2-server"
     enabled: yes
     state: restarted
-  when: cluster_role == "server"
+  when: rke2_role == "server"
   tags:
   - rke2_systemd
   - rke2_systemd_restart
@@ -36,7 +36,7 @@
     name: "rke2-agent"
     enabled: yes
     state: restarted
-  when: cluster_role == "agent"
+  when: rke2_role == "agent"
   tags:
   - rke2_systemd
   - rke2_systemd_restart

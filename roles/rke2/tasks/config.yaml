@@ -1,7 +1,7 @@
 ---
 - name: rke2 | config | main
   ansible.builtin.template:
-    src: "role.{{ cluster_role }}.config.j2"
+    src: "role.{{ rke2_role }}.config.j2"
     dest: "{{ rke2_dir }}/config/config.yaml"
     mode: 0644
   tags:
