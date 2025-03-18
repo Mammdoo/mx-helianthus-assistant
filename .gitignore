@@ -1,1 +1,2 @@
 roles/ceph/files/*.keyring
+utils/kubeconfig
