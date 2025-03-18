@@ -1,0 +1,11 @@
+---
+- name: rke2 | kubeconfig | fetch
+  ansible.builtin.fetch:
+    dest: utils/kubeconfig
+    src: /etc/rancher/rke2/rke2.yaml
+    flat: true
+  when: rke_initialize is defined and rke_initialize
+  tags:
+  - initialize
+  - initialize_rke2
+  - initialize_rke2_kubeconfig
