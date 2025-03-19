@@ -1,4 +1,16 @@
 ---
+- name: rke2 | kubeconfig | server | fix
+  ansible.builtin.lineinfile:
+    path: /etc/rancher/rke2/rke2.yaml
+    regexp: ^(.*)127.0.0.1(.*)
+    line: \1{{ loadbalancer_domain }}\2
+    backrefs: yes
+  when: rke_initialize is defined and rke_initialize
+  tags:
+  - initialize
+  - initialize_rke2
+  - initialize_rke2_kubeconfig
+
 - name: rke2 | kubeconfig | fetch
   ansible.builtin.fetch:
     dest: utils/kubeconfig
