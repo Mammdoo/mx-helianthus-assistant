@@ -13,3 +13,8 @@
   gather_facts: false
   roles:
   - ceph
+
+- hosts: kubeclient
+  gather_facts: false
+  roles:
+  - kubernetes

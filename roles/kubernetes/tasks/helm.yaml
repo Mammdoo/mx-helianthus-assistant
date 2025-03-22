@@ -1,0 +1,17 @@
+---
+- name: helm | repo | add
+  kubernetes.core.helm_repository:
+    repo_url: "{{ item.url }}"
+    repo_name: "{{ item.name }}"
+    force_update: false
+  with_items:
+  - {"name": "grafana", "url": "https://grafana.github.io/helm-charts"}
+  - {"name": "ceph-csi", "url": "https://ceph.github.io/csi-charts"}
+  tags:
+  - initialize
+  - initialize_helm
+  - initialize_helm_repo
+
+- name: helm | install | base
+  kubernetes.core.helm:
+  

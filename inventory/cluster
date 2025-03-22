@@ -38,6 +38,13 @@ servers
 ceph_uuid=35437B3D-CE81-41C5-96C8-F48A3D778F2C
 ceph_name=mx-assistant
 
+[kubeclient]
+kubernetes-connection  ansible_connection=local
+
+[kubeclient:vars]
+kubeconfig=utils/kubeconfig
+ansible_python_interpreter=/usr/bin/python3
+
 [all:vars]
 ansible_ssh_user=root
 loadbalancer_domain=lb.mammdoo.studio

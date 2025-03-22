@@ -1,0 +1,10 @@
+---
+secret:
+  create: true
+  userID:
+  userKey:
+
+storageClass:
+  create: true
+  name: {{ ceph_name }}-ceph-csi-rbd
+  clusterID: {{ ceph_uuid }}
