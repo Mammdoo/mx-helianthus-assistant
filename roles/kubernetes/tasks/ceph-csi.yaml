@@ -1,0 +1,33 @@
+---
+- name: helm | template | ceph
+  kubernetes.core.helm_template:
+    chart_ref: ceph-csi/ceph-csi-rbd
+    chart_version: 3.13.1
+    include_crds: true
+    output_dir: ceph-csi
+    release_name: "{{ kubernetes_ceph_pool_name }}"
+    release_namespace: ceph-csi
+    values_files:
+    - roles/kubernetes/files/ceph/values.yaml
+  tags:
+  - initialize_helm_ceph_template
+
+
+- name: helm | install | ceph
+  kubernetes.core.helm:
+    kubeconfig: utils/kubeconfig
+    update_repo_cache: true
+    chart_ref: ceph-csi/ceph-csi-rbd
+    chart_version: 3.13.1
+    release_name: "{{ kubernetes_ceph_pool_name }}"
+    release_namespace: ceph-csi
+    create_namespace: true
+    release_state: present
+    values_files:
+    - roles/kubernetes/files/ceph/values.yaml
+  tags:
+  - initialize
+  - initialize_helm
+  - initialize_helm_ceph
+  - initialize_helm_ceph_install
+

@@ -1,2 +1,5 @@
 roles/ceph/files/*.keyring
+roles/ceph/files/monmap
+roles/kubernetes/files/**/values.yaml
 utils/kubeconfig
+utils/ceph.*

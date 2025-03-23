@@ -1,0 +1,91 @@
+---
+- name: ceph | kubernetes | pool | create
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} osd pool create kubernetes-{{ kubernetes_ceph_pool_name }}
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+
+- name: ceph | kubernetes | pool | application
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} osd pool application enable kubernetes-{{ kubernetes_ceph_pool_name }} rbd
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+
+- name: ceph | kubernetes | pool | min-size
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} osd pool set kubernetes-{{ kubernetes_ceph_pool_name }} min_size 1
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+
+- name: ceph | kubernetes | pool | size
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} osd pool set kubernetes-{{ kubernetes_ceph_pool_name }} size 1 --yes-i-really-mean-it
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+
+- name: ceph | kubernetes | pool | autoscaling
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} osd pool set kubernetes-{{ kubernetes_ceph_pool_name }} pg_autoscale_mode on
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+
+- name: ceph | kubernetes | pool | init
+  ansible.builtin.shell:
+    cmd: rbd --cluster {{ ceph_name }} pool init -p kubernetes-{{ kubernetes_ceph_pool_name }}
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+  - initialize_ceph_kubernetes_pool
+
+- name: ceph | kubernetes | pool | user
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} auth get-or-create client.kubernetes.{{ kubernetes_ceph_pool_name }} mon 'allow r' osd 'allow rwx pool=kubernetes-{{ kubernetes_ceph_pool_name }}'
+  register: ceph_kubernetes_user
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+  - initialize_ceph_kubernetes_user
+
+- name: ceph | kubernetes | pool | user
+  ansible.builtin.lineinfile:
+    path: /tmp/ceph.kubernetes.{{ kubernetes_ceph_pool_name }}
+    line: "{{ ceph_kubernetes_user.stdout | regex_search('key = (.*)', '\\1') | first }}"
+    create: yes
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+  - initialize_ceph_kubernetes_user
+  
+- name: ceph | kubernetes | pool | user
+  ansible.builtin.fetch:
+    dest: utils/ceph.{{ kubernetes_ceph_pool_name }}
+    src: /tmp/ceph.kubernetes.{{ kubernetes_ceph_pool_name }}
+    flat: true
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_kubernetes
+  - initialize_ceph_kubernetes_user
+  
+
+# - name: ceph | kubernetes | pool | user | debug
+#   ansible.builtin.debug:
+#     msg: "{{ ceph_kubernetes_user }}"
+#   tags:
+#   - initialize
+#   - initialize_ceph
+#   - initialize_ceph_kubernetes
+#   - initialize_ceph_kubernetes_user

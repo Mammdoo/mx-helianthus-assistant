@@ -30,3 +30,11 @@
   - initialize
   - initialize_ceph
   - initialize_ceph_config
+  - ceph_config_update
+
+- name: ceph | systemd | restart
+  ansible.builtin.systemd:
+    name: ceph-mon@{{ inventory_hostname }}
+    state: restarted
+  tags:
+  - ceph_config_update

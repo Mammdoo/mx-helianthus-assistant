@@ -1,0 +1,19 @@
+{%- set mons = [] %}
+{%- for i in groups['ceph'] %}
+{{ mons.append(hostvars[i]['ansible_ssh_host'] + ':6789')  }}
+{% endfor %}
+---
+secret:
+  create: true
+  userID: "kubernetes.{{ kubernetes_ceph_pool_name }}"
+  userKey: "{{ lookup('ansible.builtin.file', 'utils/ceph.' + kubernetes_ceph_pool_name) }}"
+
+storageClass:
+  create: true
+  name: "{{ kubernetes_ceph_pool_name }}-ceph-rbd"
+  clusterID: "{{ hostvars[groups['ceph'][0]]['ceph_uuid'] }}"
+  pool: "kubernetes-{{ kubernetes_ceph_pool_name }}"
+
+csiConfig:
+  - clusterID: "{{ hostvars[groups['ceph'][0]]['ceph_uuid'] }}"
+    monitors: {{ mons }}

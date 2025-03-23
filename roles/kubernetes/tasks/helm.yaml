@@ -12,6 +12,13 @@
   - initialize_helm
   - initialize_helm_repo
 
-- name: helm | install | base
-  kubernetes.core.helm:
-  
+- name: helm | ceph | values
+  ansible.builtin.template:
+    src: ceph/values.yaml.j2
+    dest: roles/kubernetes/files/ceph/values.yaml
+  when: kubernetes_ceph_pool_name is defined
+  tags:
+  - initialize
+  - initilaize_helm
+  - initialize_helm_ceph
+  - initialize_helm_ceph_values
