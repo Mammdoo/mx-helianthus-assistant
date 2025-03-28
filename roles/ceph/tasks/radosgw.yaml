@@ -1,0 +1,45 @@
+---
+- name: ceph | radosgw | install
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+  - radosgw
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_radosgw
+  - initialize_ceph_radosgw_package
+
+- name: ceph | radosgw | data
+  ansible.builtin.file:
+    state: directory
+    path: /var/lib/ceph/radosgw/{{ ceph_name }}-rgw.{{ inventory_hostname }}
+    owner: ceph
+    group: ceph
+    recurse: yes
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_radosgw
+  - initialize_ceph_radosgw_data
+
+- name: ceph | radosgw | keyring
+  ansible.builtin.shell:
+    cmd: ceph --cluster {{ ceph_name }} auth get-or-create client.rgw.{{ inventory_hostname }} mon 'allow rw' osd 'allow rwx' > /var/lib/ceph/radosgw/{{ ceph_name }}-rgw.{{ inventory_hostname }}/keyring
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_radosgw
+  - initialize_ceph_radosgw_keyring
+
+- name: ceph | radosgw | systemd
+  ansible.builtin.systemd:
+    name: ceph-radosgw@rgw.{{ inventory_hostname }}
+    state: restarted
+  tags:
+  - initialize
+  - initialize_ceph
+  - initialize_ceph_radosgw
+  - initialize_ceph_radosgw_systemd
