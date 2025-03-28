@@ -9,3 +9,9 @@ server: https://{{ loadbalancer_domain }}:9345
 {% endif %}
 tls-san:
   - {{ loadbalancer_domain }}
+kubelet-arg:
+  - "max-pods=250"
+kube-proxy-arg:
+  - proxy-mode=ipvs
+  - ipvs-strict-arp=true
+  - ipvs-scheduler=lc

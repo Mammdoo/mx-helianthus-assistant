@@ -8,6 +8,7 @@
   - initialize
   - initialize_rke2
   - initialize_rke2_config
+  - rke2_systemd_restart
 
 - name: rke2 | config | others
   ansible.builtin.template:
@@ -20,3 +21,4 @@
   - initialize
   - initialize_rke2
   - initialize_rke2_config
+  - rke2_systemd_restart
