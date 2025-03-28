@@ -1,0 +1,31 @@
+---
+- name: kubernetes | metallb | install
+  kubernetes.core.k8s:
+    kubeconfig: utils/kubeconfig
+    src: metallb/metallb-native.yaml
+    state: present
+  tags:
+  - initialize
+  - initialize_kubernetes
+  - initialize_kubernetes_metallb
+
+- name: kubernetes | metallb | pool
+  kubernetes.core.k8s:
+    kubeconfig: utils/kubeconfig
+    template: metallb/address.yaml
+    state: present
+  tags:
+  - initialize
+  - initialize_kubernetes
+  - initialize_kubernetes_metallb
+
+- name: kubernetes | metallb | advertisement
+  kubernetes.core.k8s:
+    kubeconfig: utils/kubeconfig
+    template: metallb/advertisement.yaml
+    state: present
+  tags:
+  - initialize
+  - initialize_kubernetes
+  - initialize_kubernetes_metallb
+  - initialize_kubernetes_metallb_advertisement

@@ -9,9 +9,12 @@ server: https://{{ loadbalancer_domain }}:9345
 {% endif %}
 tls-san:
   - {{ loadbalancer_domain }}
+  - 100.64.0.0/12
 kubelet-arg:
   - "max-pods=250"
 kube-proxy-arg:
   - proxy-mode=ipvs
   - ipvs-strict-arp=true
   - ipvs-scheduler=lc
+disable:
+  - rke2-ingress-nginx

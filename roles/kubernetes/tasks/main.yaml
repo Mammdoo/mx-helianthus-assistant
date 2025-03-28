@@ -1,5 +1,13 @@
 ---
 - import_tasks: helm.yaml
 
+- import_tasks: metallb.yaml
+  when: kubernetes_metallb is defined and kubernetes_metallb == "enabled"
+
 - import_tasks: ceph-csi.yaml
   when: kubernetes_ceph_pool_name is defined
+
+- import_tasks: ingress.yaml
+
+- import_tasks: olm.yaml
+  when: kubernetes_olm is defined and kubernetes_olm == "enabled"

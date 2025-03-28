@@ -44,6 +44,8 @@ kubernetes-connection  ansible_connection=local
 [kubeclient:vars]
 kubeconfig=utils/kubeconfig
 ansible_python_interpreter=/usr/bin/python3
+kubernetes_metallb=enabled
+kubernetes_metallb_cidr=10.250.242.0/24
 
 [all:vars]
 ansible_ssh_user=root
