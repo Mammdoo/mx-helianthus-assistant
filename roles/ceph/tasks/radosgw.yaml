@@ -37,7 +37,8 @@
 - name: ceph | radosgw | systemd
   ansible.builtin.systemd:
     name: ceph-radosgw@rgw.{{ inventory_hostname }}
-    state: restarted
+    state: started
+    enabled: yes
   tags:
   - initialize
   - initialize_ceph

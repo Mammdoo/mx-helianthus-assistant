@@ -9,5 +9,5 @@
 
 - import_tasks: ingress.yaml
 
-- import_tasks: olm.yaml
-  when: kubernetes_olm is defined and kubernetes_olm == "enabled"
+- import_tasks: mammdoo.yaml
+  when: kubernetes_follow_me is defined and kubernetes_follow_me

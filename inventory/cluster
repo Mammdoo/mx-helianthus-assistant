@@ -42,10 +42,12 @@ ceph_name=mx-assistant
 kubernetes-connection  ansible_connection=local
 
 [kubeclient:vars]
+kubernetes_follow_me=true
 kubeconfig=utils/kubeconfig
 ansible_python_interpreter=/usr/bin/python3
 kubernetes_metallb=enabled
 kubernetes_metallb_cidr=10.250.242.0/24
+kubernetes_olm=enabled
 
 [all:vars]
 ansible_ssh_user=root

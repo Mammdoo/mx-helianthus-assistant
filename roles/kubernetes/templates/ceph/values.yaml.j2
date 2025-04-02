@@ -1,7 +1,7 @@
 {%- set mons = [] %}
 {%- for i in groups['ceph'] %}
 {{ mons.append(hostvars[i]['ansible_ssh_host'] + ':6789')  }}
-{% endfor %}
+{%- endfor %}
 ---
 secret:
   create: true
@@ -10,6 +10,8 @@ secret:
 
 storageClass:
   create: true
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
   name: "{{ kubernetes_ceph_pool_name }}-ceph-rbd"
   clusterID: "{{ hostvars[groups['ceph'][0]]['ceph_uuid'] }}"
   pool: "kubernetes-{{ kubernetes_ceph_pool_name }}"

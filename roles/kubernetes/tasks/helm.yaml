@@ -8,10 +8,30 @@
   - {"name": "grafana", "url": "https://grafana.github.io/helm-charts"}
   - {"name": "ceph-csi", "url": "https://ceph.github.io/csi-charts"}
   - {"name": "ingress-nginx", "url": "https://kubernetes.github.io/ingress-nginx"}
+  - {"name": "jetstack", "url": "https://charts.jetstack.io"}
+  - {"name": "plex", 'url': "https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages"}
   tags:
   - initialize
   - initialize_helm
   - initialize_helm_repo
+
+- name: helm | cert-manager | install
+  kubernetes.core.helm:
+    kubeconfig: utils/kubeconfig
+    update_repo_cache: true
+    chart_ref: jetstack/cert-manager
+    chart_version: v1.17.0
+    release_name: cert-manager
+    release_namespace: cert-manager
+    create_namespace: true
+    release_state: present
+    values:
+      crds:
+        enabled: true
+  tags:
+  - initialize
+  - initialize_helm
+  - initialize_helm_certmanager
 
 - name: helm | ceph | values
   ansible.builtin.template:
