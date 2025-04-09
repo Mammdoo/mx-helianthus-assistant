@@ -1,0 +1,7 @@
+ceph_osd_devices:
+- /dev/sdb
+- /dev/sdc
+- /dev/sdd
+- /dev/sde
+- /dev/sdf
+- /dev/sdg

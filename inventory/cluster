@@ -6,7 +6,7 @@ cephadm=true
 
 [servers]
 mx-cluster-201  ansible_ssh_host=10.250.252.201
-mx-cluster-202  ansible_ssh_host=10.250.252.202
+mx-cluster-202  ansible_ssh_host=10.250.252.202  ceph_osd_devices=/dev/sdb,/dev/sdc
 
 [rke2_initialize:children]
 initialize
@@ -37,6 +37,7 @@ servers
 [ceph:vars]
 ceph_uuid=35437B3D-CE81-41C5-96C8-F48A3D778F2C
 ceph_name=mx-assistant
+ceph_osd_devices=[]
 
 [kubeclient]
 kubernetes-connection  ansible_connection=local
